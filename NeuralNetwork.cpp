@@ -204,46 +204,6 @@ void NeuralNetwork::printVector(const vector<double> & v)
     std::cout << "\n";
 }
 
-vector<double> NeuralNetwork::matrixMultiply(const vector<double> & firstMatrix,
-        const vector<double> & secondMatrix,
-        const unsigned int firstColumnCount,
-        const unsigned int firstRowCount,
-        const unsigned int secondColumnCount,
-        const unsigned int secondRowCount)
-{
-    vector<double> result(firstRowCount * secondColumnCount, 0);
-
-    for (unsigned int rowCount = 0; rowCount < firstRowCount; rowCount++)
-    {
-        for (unsigned int columnCount = 0; columnCount < secondColumnCount; columnCount++)
-        {
-            for (unsigned int commonCount = 0; commonCount < firstColumnCount; commonCount++)
-            {
-                result[rowCount * secondColumnCount + columnCount] +=
-                        firstMatrix[rowCount * firstColumnCount + commonCount] *
-                        secondMatrix[commonCount * secondColumnCount + columnCount];
-            }
-        }
-    }
-    return result;
-}
-
-vector<double> NeuralNetwork::transpose(const LayerMatrix * const v)
-{
-    vector<double> matrixResult(v->matrix.size(), 0);
-
-    for (unsigned rowCounter = 0; rowCounter < v->rows; rowCounter++)
-    {
-        for (unsigned columnsCounter = 0; columnsCounter < v->columns; columnsCounter++)
-        {
-            matrixResult[columnsCounter * v->rows + rowCounter] =
-                    v->matrix[rowCounter * v->columns + columnsCounter];
-        }
-    }
-
-    return matrixResult;
-}
-
 //Returns the value of the sigmoid function f(x) = 1/(1 + e^-x).
 
 double NeuralNetwork::sigmoid(double value)

@@ -7,21 +7,21 @@ CND_BASEDIR=`pwd`
 CND_BUILDDIR=build
 CND_DISTDIR=dist
 # Debug configuration
-CND_PLATFORM_Debug=MinGW7-Windows
-CND_ARTIFACT_DIR_Debug=dist/Debug/MinGW7-Windows
+CND_PLATFORM_Debug=Cygwin-Windows
+CND_ARTIFACT_DIR_Debug=dist/Debug/Cygwin-Windows
 CND_ARTIFACT_NAME_Debug=neuralnetwork
-CND_ARTIFACT_PATH_Debug=dist/Debug/MinGW7-Windows/neuralnetwork
-CND_PACKAGE_DIR_Debug=dist/Debug/MinGW7-Windows/package
+CND_ARTIFACT_PATH_Debug=dist/Debug/Cygwin-Windows/neuralnetwork
+CND_PACKAGE_DIR_Debug=dist/Debug/Cygwin-Windows/package
 CND_PACKAGE_NAME_Debug=neuralnetwork.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/MinGW7-Windows/package/neuralnetwork.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/Cygwin-Windows/package/neuralnetwork.tar
 # Release configuration
-CND_PLATFORM_Release=MinGW7-Windows
-CND_ARTIFACT_DIR_Release=dist/Release/MinGW7-Windows
+CND_PLATFORM_Release=Cygwin-Windows
+CND_ARTIFACT_DIR_Release=dist/Release/Cygwin-Windows
 CND_ARTIFACT_NAME_Release=neuralnetwork
-CND_ARTIFACT_PATH_Release=dist/Release/MinGW7-Windows/neuralnetwork
-CND_PACKAGE_DIR_Release=dist/Release/MinGW7-Windows/package
+CND_ARTIFACT_PATH_Release=dist/Release/Cygwin-Windows/neuralnetwork
+CND_PACKAGE_DIR_Release=dist/Release/Cygwin-Windows/package
 CND_PACKAGE_NAME_Release=neuralnetwork.tar
-CND_PACKAGE_PATH_Release=dist/Release/MinGW7-Windows/package/neuralnetwork.tar
+CND_PACKAGE_PATH_Release=dist/Release/Cygwin-Windows/package/neuralnetwork.tar
 #
 # include compiler specific variables
 #

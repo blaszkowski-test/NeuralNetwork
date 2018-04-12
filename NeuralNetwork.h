@@ -37,13 +37,12 @@ vector<double> operator*(const vector<double> & matrixOne, const vector<double> 
 class NeuralNetwork
 {
 protected:
-    vector<double> input, weights, expecation, transposeMatrix;
 
     LayerMatrix expectation;
-    LayerMatrix * tempLayerMatrix;
     vector<Layer> layersVector;
 
 public:
+
     NeuralNetwork();
     void firstTest();
     void secondTest();
@@ -51,14 +50,6 @@ public:
     void runLoop();
 
 protected:
-    vector<double> matrixMultiply(const vector<double> & firstMatrix,
-            const vector<double> & secondMatrix,
-            const unsigned int firstColumnCount,
-            const unsigned int firstRowCount,
-            const unsigned int secondColumnCount,
-            const unsigned int secondRowCount);
-    
-    vector<double> transpose(const LayerMatrix * const v);
 
     double sigmoid(double value);
 
@@ -69,7 +60,7 @@ protected:
     vector<double> apply_sigmoid_d(const vector<double> & matrixOne);
 
     void printMatrix(const LayerMatrix * const v);
-    
+
     void printVector(const vector<double> & v);
 
 };
