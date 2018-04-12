@@ -34,10 +34,12 @@ vector<double> operator-(const vector<double> & matrixOne, const vector<double> 
 
 vector<double> operator*(const vector<double> & matrixOne, const vector<double> & matrixTwo);
 
+vector<double> operator*(const double & scalar, const vector<double> & matrixTwo);
+
 class NeuralNetwork
 {
 protected:
-
+    double scalar;
     LayerMatrix expectation;
     vector<Layer> layersVector;
 

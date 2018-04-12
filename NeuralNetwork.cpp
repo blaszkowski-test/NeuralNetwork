@@ -69,7 +69,9 @@ void NeuralNetwork::firstTest()
 }
 
 void NeuralNetwork::secondTest()
-{
+{   
+    scalar = 3.0;
+    
     expectation.matrix.assign({
         0,
         1,
@@ -172,7 +174,7 @@ void NeuralNetwork::runLoop()
         {
             if (layer.getLayerType() != LayerType::OutputLayer)
             {
-                layer.weight->matrix = layer.weight->matrix + layer.weightChange->matrix;
+                layer.weight->matrix = layer.weight->matrix + (scalar * layer.weightChange->matrix);
             }
         }
     }
@@ -273,6 +275,18 @@ vector<double> operator*(const vector<double> & matrixOne, const vector<double> 
     for (unsigned i = 0; i < matrixOne.size(); i++)
     {
         matrixResult[i] = matrixOne[i] * matrixTwo[i];
+    }
+
+    return matrixResult;
+}
+
+vector<double> operator*(const double & scalar, const vector<double> & matrixTwo)
+{
+    vector<double> matrixResult(matrixTwo.size(), 0);
+
+    for (unsigned i = 0; i < matrixTwo.size(); i++)
+    {
+        matrixResult[i] = matrixTwo[i] * scalar;
     }
 
     return matrixResult;
