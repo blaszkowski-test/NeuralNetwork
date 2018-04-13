@@ -12,6 +12,8 @@ NeuralNetwork::NeuralNetwork()
 
 void NeuralNetwork::firstTest()
 {
+    scalar = 3.8;
+    
     expectation.matrix.assign({
         0, 0, 0, 0,
         0, 0, 0, 1,
@@ -27,7 +29,6 @@ void NeuralNetwork::firstTest()
 
     Layer inLayer(LayerType::InputLayer);
     inLayer.inputOrActivation = new LayerMatrix(10, 10,{
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -36,7 +37,8 @@ void NeuralNetwork::firstTest()
         0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 0
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 1
 
     });
     inLayer.weight = new LayerMatrix(10, 10);
@@ -45,20 +47,12 @@ void NeuralNetwork::firstTest()
     layersVector.push_back(std::move(inLayer));
 
     Layer firstHidden(LayerType::HiddenLayer);
-    firstHidden.weight = new LayerMatrix(10, 10);
+    firstHidden.weight = new LayerMatrix(10, 4);
     firstHidden.product = new LayerMatrix(10, 10, 0);
     firstHidden.inputOrActivation = new LayerMatrix(10, 10, 0);
-    firstHidden.weightChange = new LayerMatrix(10, 10, 0);
+    firstHidden.weightChange = new LayerMatrix(10, 4, 0);
     firstHidden.delta = new LayerMatrix(10, 10, 0);
     layersVector.push_back(std::move(firstHidden));
-
-    Layer secondHidden(LayerType::HiddenLayer);
-    secondHidden.weight = new LayerMatrix(10, 4);
-    secondHidden.product = new LayerMatrix(10, 10, 0);
-    secondHidden.inputOrActivation = new LayerMatrix(10, 10, 0);
-    secondHidden.weightChange = new LayerMatrix(10, 4, 0);
-    secondHidden.delta = new LayerMatrix(10, 10, 0);
-    layersVector.push_back(std::move(secondHidden));
 
     Layer outLayer(LayerType::OutputLayer);
     outLayer.product = new LayerMatrix(10, 4, 0);
@@ -117,13 +111,13 @@ void NeuralNetwork::secondTest()
 
 void NeuralNetwork::execute()
 {
-    secondTest();
+    firstTest();
     runLoop();
 }
 
 void NeuralNetwork::runLoop()
 {
-    unsigned buffer = 10000;
+    unsigned buffer = 33333;
 
     while (buffer-- > 0)
     {
