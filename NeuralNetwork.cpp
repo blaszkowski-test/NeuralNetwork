@@ -45,8 +45,7 @@ void NeuralNetwork::firstTest()
 
     });
     inLayer.weight = new LayerMatrix(10, 10);
-    inLayer.weightChange = new LayerMatrix(10, 10, 0);
-    inLayer.delta = new LayerMatrix(10, 10, 0);
+    inLayer.weightChange = new LayerMatrix(10, 10, 0); 
     layersVector.push_back(std::move(inLayer));
 
     Layer firstHidden(LayerType::HiddenLayer);
