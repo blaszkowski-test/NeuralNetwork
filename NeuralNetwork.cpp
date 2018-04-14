@@ -64,7 +64,7 @@ void NeuralNetwork::firstTest()
 
 void NeuralNetwork::secondTest()
 {   
-    scalar = 3.0;
+    scalar = 3.2;
     
     expectation.matrix.assign({
         0,
