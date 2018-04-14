@@ -1,0 +1,6 @@
+dist
+nbproject
+build
+mkdir.exe.stackdump
+neuralnetwork.exe.stackdump
+.dep.inc
