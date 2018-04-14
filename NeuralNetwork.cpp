@@ -15,7 +15,7 @@ NeuralNetwork::NeuralNetwork()
 
 void NeuralNetwork::firstTest()
 {
-    scalar = 3.8;
+    scalar = 4.8;
 
     expectation.matrix.assign({
         0, 0, 0, 0,
@@ -170,39 +170,43 @@ void NeuralNetwork::backPropagate()
 }
 
 double NeuralNetwork::costFunction()
-{           
-    LayerMatrix * last = (*--layersVector.end()).inputOrActivation;// layersVector[layersVector.size() - 1].inputOrActivation;
-    LayerMatrix cost(last->rows, last->columns, expectation.matrix - last->matrix);
-    double costOverall = 0;
-    std::for_each(cost.matrix.begin(), cost.matrix.end(), [&costOverall](double & one)->void {
-        costOverall += std::fabs(one);
+{
+    costOverall = 0;
+    costVector = expectation.matrix - (*--layersVector.end()).inputOrActivation->matrix;
+    std::for_each(costVector.begin(), costVector.end(), [this](double & one)->void {
+        this->costOverall += std::fabs(one);
     });
-    cout<< "\ncostOverall: " << costOverall << "\n";
-    printMatrix(&cost);
+    return costOverall;
 }
 
 void NeuralNetwork::execute()
 {
     firstTest();
     runLoop();
-    costFunction();
 }
 
 void NeuralNetwork::runLoop()
 {
-    unsigned buffer = 100000;
+    steady_clock::time_point t1 = steady_clock::now();
 
-    while (buffer-- > 0)
+    while (true)
     {
         forward();
         backPropagate();
+        if (costFunction() < 0.05 ||
+                duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
+        {
+            break;
+        }
     }
 
+    double buffer = 0;
     for (vector<Layer>::iterator i = layersVector.begin(); i != layersVector.end(); i++)
     {
         cout << "number: " << ++buffer << "\n";
         cout << (*i);
     }
+    cout << "\n\nCost: " << costFunction() << "\n\n";
 }
 
 void NeuralNetwork::printMatrix(const LayerMatrix * const v)

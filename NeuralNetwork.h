@@ -19,6 +19,7 @@
 #include <vector>
 #include <math.h>
 #include <iomanip>
+#include <chrono>
 
 #include "LayerType.h"
 #include "Layer.h"
@@ -27,6 +28,7 @@
 using std::vector;
 using std::cout;
 using std::endl;
+using namespace std::chrono;
 
 vector<double> operator+(const vector<double> & matrixOne, const vector<double> & matrixTwo);
 vector<double> operator-(const vector<double> & matrixOne, const vector<double> & matrixTwo);
@@ -37,6 +39,8 @@ class NeuralNetwork
 {
 protected:
     double scalar;
+    double costOverall;
+    vector<double> costVector;
     LayerMatrix expectation;
     vector<Layer> layersVector;
 public:
