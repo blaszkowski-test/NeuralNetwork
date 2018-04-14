@@ -29,11 +29,8 @@ using std::cout;
 using std::endl;
 
 vector<double> operator+(const vector<double> & matrixOne, const vector<double> & matrixTwo);
-
 vector<double> operator-(const vector<double> & matrixOne, const vector<double> & matrixTwo);
-
 vector<double> operator*(const vector<double> & matrixOne, const vector<double> & matrixTwo);
-
 vector<double> operator*(const double & scalar, const vector<double> & matrixTwo);
 
 class NeuralNetwork
@@ -42,29 +39,22 @@ protected:
     double scalar;
     LayerMatrix expectation;
     vector<Layer> layersVector;
-
 public:
-
     NeuralNetwork();
     void firstTest();
     void secondTest();
     void execute();
-    void runLoop();
-
 protected:
-
+    void runLoop();
+    void forward();
+    void backPropagate();
+    double costFunction();
     double sigmoid(double value);
-
     double sigmoid_d(double value);
-
     vector<double> apply_sigmoid(const vector<double> & matrixOne);
-
     vector<double> apply_sigmoid_d(const vector<double> & matrixOne);
-
     void printMatrix(const LayerMatrix * const v);
-
     void printVector(const vector<double> & v);
-
 };
 
 #endif /* NEURALNETWORK_H */

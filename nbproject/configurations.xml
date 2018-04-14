@@ -43,7 +43,8 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <standard>8</standard>
+          <standard>11</standard>
+          <commandLine>-O3</commandLine>
         </ccTool>
       </compileType>
       <item path="Layer.cpp" ex="false" tool="1" flavor2="0">

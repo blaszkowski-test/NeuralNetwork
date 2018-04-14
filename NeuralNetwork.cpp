@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 
+#include <algorithm>
+#include <cmath>
+
 #include "NeuralNetwork.h"
 
 NeuralNetwork::NeuralNetwork()
@@ -13,7 +16,7 @@ NeuralNetwork::NeuralNetwork()
 void NeuralNetwork::firstTest()
 {
     scalar = 3.8;
-    
+
     expectation.matrix.assign({
         0, 0, 0, 0,
         0, 0, 0, 1,
@@ -63,9 +66,9 @@ void NeuralNetwork::firstTest()
 }
 
 void NeuralNetwork::secondTest()
-{   
+{
     scalar = 3.2;
-    
+
     expectation.matrix.assign({
         0,
         1,
@@ -100,7 +103,7 @@ void NeuralNetwork::secondTest()
     secondHidden.weightChange = new LayerMatrix(4, 1, 0);
     secondHidden.delta = new LayerMatrix(4, 4, 0);
     layersVector.push_back(std::move(secondHidden));
-    
+
     Layer outLayer(LayerType::OutputLayer);
     outLayer.product = new LayerMatrix(4, 1, 0);
     outLayer.inputOrActivation = new LayerMatrix(4, 1, 0);
@@ -109,68 +112,90 @@ void NeuralNetwork::secondTest()
     layersVector.push_back(std::move(outLayer));
 }
 
+void NeuralNetwork::forward()
+{
+    for (unsigned i = 0; i < layersVector.size() - 1; i++)
+    {
+        *layersVector[i + 1].product =
+                *layersVector[i].inputOrActivation *
+                *layersVector[i].weight;
+
+        layersVector[i + 1].inputOrActivation->matrix = apply_sigmoid(
+                layersVector[i + 1].product->matrix
+                );
+    }
+}
+
+void NeuralNetwork::backPropagate()
+{
+    for (unsigned i = layersVector.size() - 1; i > 0; i--)
+    {
+        switch (layersVector[i].getLayerType())
+        {
+            case LayerType::OutputLayer:
+
+                layersVector[i].delta->matrix =
+                        (expectation.matrix - layersVector[i].inputOrActivation->matrix) *
+                        apply_sigmoid_d(layersVector[i].product->matrix);
+
+                *layersVector[i - 1].weightChange =
+                        layersVector[i - 1].inputOrActivation->transpose() *
+                        *layersVector[i].delta;
+                break;
+
+            case LayerType::HiddenLayer:
+
+                *layersVector[i].delta =
+                        *layersVector[i].weight *
+                        layersVector[i + 1].delta->transpose();
+
+                layersVector[i].delta->matrix = layersVector[i].delta->matrix *
+                        apply_sigmoid_d(layersVector[i].product->matrix);
+
+                *layersVector[i - 1].weightChange =
+                        layersVector[i - 1].inputOrActivation->transpose() *
+                        *layersVector[i].delta;
+
+                break;
+        }
+    }
+
+    for (Layer & layer : layersVector)
+    {
+        if (layer.getLayerType() != LayerType::OutputLayer)
+        {
+            layer.weight->matrix = layer.weight->matrix + (scalar * layer.weightChange->matrix);
+        }
+    }
+}
+
+double NeuralNetwork::costFunction()
+{           
+    LayerMatrix * last = (*--layersVector.end()).inputOrActivation;// layersVector[layersVector.size() - 1].inputOrActivation;
+    LayerMatrix cost(last->rows, last->columns, expectation.matrix - last->matrix);
+    double costOverall = 0;
+    std::for_each(cost.matrix.begin(), cost.matrix.end(), [&costOverall](double & one)->void {
+        costOverall += std::fabs(one);
+    });
+    cout<< "\ncostOverall: " << costOverall << "\n";
+    printMatrix(&cost);
+}
+
 void NeuralNetwork::execute()
 {
     firstTest();
     runLoop();
+    costFunction();
 }
 
 void NeuralNetwork::runLoop()
 {
-    unsigned buffer = 33333;
+    unsigned buffer = 100000;
 
     while (buffer-- > 0)
     {
-        for (unsigned i = 0; i < layersVector.size() - 1; i++)
-        {
-            *layersVector[i + 1].product =
-                    *layersVector[i].inputOrActivation *
-                    *layersVector[i].weight;
-
-            layersVector[i + 1].inputOrActivation->matrix = apply_sigmoid(
-                    layersVector[i + 1].product->matrix
-                    );
-        }
-
-        for (unsigned i = layersVector.size() - 1; i > 0; i--)
-        {
-            switch (layersVector[i].getLayerType())
-            {
-                case LayerType::OutputLayer:
-
-                    layersVector[i].delta->matrix =
-                            (expectation.matrix - layersVector[i].inputOrActivation->matrix) *
-                            apply_sigmoid_d(layersVector[i].product->matrix);
-
-                    *layersVector[i - 1].weightChange =
-                            layersVector[i - 1].inputOrActivation->transpose() *
-                            *layersVector[i].delta;
-                    break;
-
-                case LayerType::HiddenLayer:
-
-                    *layersVector[i].delta =
-                            *layersVector[i].weight *
-                            layersVector[i + 1].delta->transpose();
-
-                    layersVector[i].delta->matrix = layersVector[i].delta->matrix *
-                            apply_sigmoid_d(layersVector[i].product->matrix);
-
-                    *layersVector[i - 1].weightChange =
-                            layersVector[i - 1].inputOrActivation->transpose() *
-                            *layersVector[i].delta;
-
-                    break;
-            }
-        }
-
-        for (Layer & layer : layersVector)
-        {
-            if (layer.getLayerType() != LayerType::OutputLayer)
-            {
-                layer.weight->matrix = layer.weight->matrix + (scalar * layer.weightChange->matrix);
-            }
-        }
+        forward();
+        backPropagate();
     }
 
     for (vector<Layer>::iterator i = layersVector.begin(); i != layersVector.end(); i++)

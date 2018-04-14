@@ -31,7 +31,7 @@ public:
     LayerMatrix(LayerMatrix && one);
     LayerMatrix(unsigned int r, unsigned int c);
     LayerMatrix(unsigned int r, unsigned int c, double v);
-    LayerMatrix(unsigned int r, unsigned int c, vector<double> & v);
+    LayerMatrix(unsigned int r, unsigned int c, vector<double> v);
     LayerMatrix(unsigned int r, unsigned int c, initializer_list<double> v);    
     LayerMatrix & operator=(const LayerMatrix & one);    
     LayerMatrix operator * (const LayerMatrix & two);    

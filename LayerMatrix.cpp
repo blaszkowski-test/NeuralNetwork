@@ -26,7 +26,7 @@ rows(r), columns(c)
     }
 }
 
-LayerMatrix::LayerMatrix(unsigned int r, unsigned int c, vector<double>& v) :
+LayerMatrix::LayerMatrix(unsigned int r, unsigned int c, vector<double> v) :
 rows(r), columns(c)
 {
     matrix.assign(v.begin(), v.end());
