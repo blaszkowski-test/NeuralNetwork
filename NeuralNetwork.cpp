@@ -256,7 +256,7 @@ double NeuralNetwork::costFunction()
 
 void NeuralNetwork::execute()
 {
-    firstTest();
+    //firstTest();
     runLoop();
 }
 
