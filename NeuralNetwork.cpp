@@ -13,6 +13,56 @@ NeuralNetwork::NeuralNetwork()
 {
 }
 
+void NeuralNetwork::addExpectation(initializer_list<double> v, unsigned rows, unsigned columns)
+{
+    expectation.rows = rows;
+    expectation.columns = columns;
+    expectation.matrix.assign(v.begin(), v.end());
+}
+
+void NeuralNetwork::addScalar(double scalar)
+{
+    this->scalar = scalar;
+}
+
+void NeuralNetwork::addInputLayer(initializer_list<double> v, unsigned rows, unsigned columns)
+{
+    Layer inLayer(LayerType::InputLayer);
+    inLayer.inputOrActivation = new LayerMatrix(rows, columns, v);
+    inLayer.weight = new LayerMatrix(columns, rows);
+    inLayer.weightChange = new LayerMatrix(columns, rows, 0);
+    layersVector.push_back(std::move(inLayer));
+}
+
+void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
+{
+//    vector<double> layerBuffer(v.begin(), v.end());
+    Layer * layerPointer = nullptr;
+     unsigned rows = 0;
+    unsigned columns = 0;
+//    for (unsigned i = 0; i < layerBuffer.size(); i++)
+//    {
+        layerPointer = &(*--layersVector.end());
+        rows = layerPointer->inputOrActivation->rows;
+        columns = layerPointer->weight->columns;
+
+        Layer hidden(LayerType::HiddenLayer);
+        hidden.product = new LayerMatrix(rows, columns, 0);
+        hidden.inputOrActivation = new LayerMatrix(rows, columns, 0);
+        hidden.delta = new LayerMatrix(rows, columns, 0);
+        hidden.weightChange = new LayerMatrix(columns, expectation.columns, 0);
+        hidden.weight = new LayerMatrix(columns, expectation.columns);
+        layersVector.push_back(std::move(hidden));
+
+//    }
+
+    Layer outLayer(LayerType::OutputLayer);
+    outLayer.product = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    outLayer.inputOrActivation = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    outLayer.delta = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    layersVector.push_back(std::move(outLayer));
+}
+
 void NeuralNetwork::firstTest()
 {
     scalar = 4.8;
@@ -45,7 +95,7 @@ void NeuralNetwork::firstTest()
 
     });
     inLayer.weight = new LayerMatrix(10, 10);
-    inLayer.weightChange = new LayerMatrix(10, 10, 0); 
+    inLayer.weightChange = new LayerMatrix(10, 10, 0);
     layersVector.push_back(std::move(inLayer));
 
     Layer firstHidden(LayerType::HiddenLayer);
@@ -158,7 +208,10 @@ void NeuralNetwork::backPropagate()
                 break;
         }
     }
+}
 
+void NeuralNetwork::weightUpdate()
+{
     for (Layer & layer : layersVector)
     {
         if (layer.getLayerType() != LayerType::OutputLayer)
@@ -192,7 +245,8 @@ void NeuralNetwork::runLoop()
     {
         forward();
         backPropagate();
-        if (costFunction() < 0.05 ||
+        weightUpdate();
+        if (costFunction() < 0.02 ||
                 duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
         {
             break;
