@@ -50,6 +50,7 @@ public:
     void addExpectation(initializer_list<double> v, unsigned rows, unsigned columns);
     void addScalar(double scalar);
     void addInputLayer(initializer_list<double> v, unsigned rows, unsigned columns);
+    void oneHiddenLayer();
     void addHiddenLayers(initializer_list<double> v);
     void execute();
 protected:

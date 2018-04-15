@@ -34,14 +34,35 @@ void NeuralNetwork::addInputLayer(initializer_list<double> v, unsigned rows, uns
     layersVector.push_back(std::move(inLayer));
 }
 
+void NeuralNetwork::oneHiddenLayer()
+{
+    Layer * layerPointer = &(*--layersVector.end());
+    unsigned rows = layerPointer->inputOrActivation->rows;
+    unsigned columns = layerPointer->weight->columns;
+
+    Layer hidden(LayerType::HiddenLayer);
+    hidden.product = new LayerMatrix(rows, columns, 0);
+    hidden.inputOrActivation = new LayerMatrix(rows, columns, 0);
+    hidden.delta = new LayerMatrix(rows, columns, 0);
+    hidden.weightChange = new LayerMatrix(columns, expectation.columns, 0);
+    hidden.weight = new LayerMatrix(columns, expectation.columns);
+    layersVector.push_back(std::move(hidden));
+
+    Layer outLayer(LayerType::OutputLayer);
+    outLayer.product = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    outLayer.inputOrActivation = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    outLayer.delta = new LayerMatrix(expectation.rows, expectation.columns, 0);
+    layersVector.push_back(std::move(outLayer));
+}
+
 void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
 {
-//    vector<double> layerBuffer(v.begin(), v.end());
+    vector<double> layerBuffer(v.begin(), v.end());
     Layer * layerPointer = nullptr;
-     unsigned rows = 0;
+    unsigned rows = 0;
     unsigned columns = 0;
-//    for (unsigned i = 0; i < layerBuffer.size(); i++)
-//    {
+    for (unsigned i = 0; i < layerBuffer.size(); i++)
+    {
         layerPointer = &(*--layersVector.end());
         rows = layerPointer->inputOrActivation->rows;
         columns = layerPointer->weight->columns;
@@ -50,11 +71,13 @@ void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
         hidden.product = new LayerMatrix(rows, columns, 0);
         hidden.inputOrActivation = new LayerMatrix(rows, columns, 0);
         hidden.delta = new LayerMatrix(rows, columns, 0);
-        hidden.weightChange = new LayerMatrix(columns, expectation.columns, 0);
-        hidden.weight = new LayerMatrix(columns, expectation.columns);
-        layersVector.push_back(std::move(hidden));
 
-//    }
+        // To find out best solution while creating many layers
+
+        //        hidden.weightChange = new LayerMatrix(columns, expectation.columns, 0);
+        //        hidden.weight = new LayerMatrix(columns, expectation.columns);
+        //        layersVector.push_back(std::move(hidden));
+    }
 
     Layer outLayer(LayerType::OutputLayer);
     outLayer.product = new LayerMatrix(expectation.rows, expectation.columns, 0);
