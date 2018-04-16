@@ -53,6 +53,7 @@ public:
     void oneHiddenLayer();
     void addHiddenLayers(initializer_list<double> v);
     void execute();
+    void show();
 protected:
     void runLoop();
     void forward();

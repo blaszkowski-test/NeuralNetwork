@@ -57,11 +57,11 @@ void NeuralNetwork::oneHiddenLayer()
 
 void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
 {
-    vector<double> layerBuffer(v.begin(), v.end());
+    vector<double> hiddenNodes(v.begin(), v.end());
     Layer * layerPointer = nullptr;
     unsigned rows = 0;
     unsigned columns = 0;
-    for (unsigned i = 0; i < layerBuffer.size(); i++)
+    for (unsigned i = 0; i < hiddenNodes.size(); i++)
     {
         layerPointer = &(*--layersVector.end());
         rows = layerPointer->inputOrActivation->rows;
@@ -72,11 +72,19 @@ void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
         hidden.inputOrActivation = new LayerMatrix(rows, columns, 0);
         hidden.delta = new LayerMatrix(rows, columns, 0);
 
-        // To find out best solution while creating many layers
+        if (i == hiddenNodes.size() - 1)
+        {
+            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->rows, expectation.columns, 0);
+            hidden.weight = new LayerMatrix(hidden.inputOrActivation->rows, expectation.columns);
+        } 
+        else
+        {
+            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->rows, hiddenNodes[i], 0);
+            hidden.weight = new LayerMatrix(hidden.inputOrActivation->rows, hiddenNodes[i]);
+        }
 
-        //        hidden.weightChange = new LayerMatrix(columns, expectation.columns, 0);
-        //        hidden.weight = new LayerMatrix(columns, expectation.columns);
-        //        layersVector.push_back(std::move(hidden));
+
+        layersVector.push_back(std::move(hidden));
     }
 
     Layer outLayer(LayerType::OutputLayer);
@@ -254,6 +262,16 @@ double NeuralNetwork::costFunction()
     return costOverall;
 }
 
+void NeuralNetwork::show()
+{
+    double buffer = 0;
+    for (vector<Layer>::iterator i = layersVector.begin(); i != layersVector.end(); i++)
+    {
+        cout << "number: " << ++buffer << "\n";
+        cout << (*i);
+    }
+}
+
 void NeuralNetwork::execute()
 {
     //firstTest();
@@ -276,12 +294,7 @@ void NeuralNetwork::runLoop()
         }
     }
 
-    double buffer = 0;
-    for (vector<Layer>::iterator i = layersVector.begin(); i != layersVector.end(); i++)
-    {
-        cout << "number: " << ++buffer << "\n";
-        cout << (*i);
-    }
+    show();
     cout << "\n\nCost: " << costFunction() << "\n\n";
 }
 
