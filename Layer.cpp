@@ -95,7 +95,8 @@ ostream & Layer::printOneLayerMatrix(ostream & out, const LayerMatrix * const on
     {
         for (unsigned y = 0; y < one->columns; y++)
         {
-            out << std::setw(15) << one->matrix[i * one->columns + y];
+            out << std::setw(5) << one->matrix[i * one->columns + y]
+                    << std::setw(2) << " , ";
         }
         out << "\n";
     }

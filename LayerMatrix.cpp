@@ -20,9 +20,9 @@ LayerMatrix::LayerMatrix(unsigned int r, unsigned int c) :
 rows(r), columns(c)
 {
     matrix.resize(rows*columns, 0);
-    for(double & one : matrix)
+    for (double & one : matrix)
     {
-        one = (double)rand() / (double)RAND_MAX;
+        one = (double) rand() / (double) RAND_MAX;
     }
 }
 

@@ -45,8 +45,6 @@ protected:
     vector<Layer> layersVector;
 public:
     NeuralNetwork();
-    void firstTest();
-    void secondTest();
     void addExpectation(initializer_list<double> v, unsigned rows, unsigned columns);
     void addScalar(double scalar);
     void addInputLayer(initializer_list<double> v, unsigned rows, unsigned columns);
@@ -54,6 +52,7 @@ public:
     void addHiddenLayers(initializer_list<double> v);
     void execute();
     void show();
+    void check();
 protected:
     void runLoop();
     void forward();

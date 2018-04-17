@@ -19,22 +19,23 @@
 #include <time.h>
 using std::vector;
 using std::initializer_list;
+
 class LayerMatrix
 {
 public:
     vector<double> matrix;
     unsigned int rows;
-    unsigned int columns;  
-    
+    unsigned int columns;
+
     LayerMatrix();
     LayerMatrix(const LayerMatrix & one);
     LayerMatrix(LayerMatrix && one);
     LayerMatrix(unsigned int r, unsigned int c);
     LayerMatrix(unsigned int r, unsigned int c, double v);
     LayerMatrix(unsigned int r, unsigned int c, vector<double> v);
-    LayerMatrix(unsigned int r, unsigned int c, initializer_list<double> v);    
-    LayerMatrix & operator=(const LayerMatrix & one);    
-    LayerMatrix operator * (const LayerMatrix & two);    
+    LayerMatrix(unsigned int r, unsigned int c, initializer_list<double> v);
+    LayerMatrix & operator=(const LayerMatrix & one);
+    LayerMatrix operator*(const LayerMatrix & two);
     LayerMatrix transpose();
 };
 

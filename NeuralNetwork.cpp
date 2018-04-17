@@ -61,7 +61,7 @@ void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
     Layer * layerPointer = nullptr;
     unsigned rows = 0;
     unsigned columns = 0;
-    for (unsigned i = 0; i < hiddenNodes.size(); i++)
+    for (int i = -1; i < (int) hiddenNodes.size(); i++)
     {
         layerPointer = &(*--layersVector.end());
         rows = layerPointer->inputOrActivation->rows;
@@ -74,15 +74,14 @@ void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
 
         if (i == hiddenNodes.size() - 1)
         {
-            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->rows, expectation.columns, 0);
-            hidden.weight = new LayerMatrix(hidden.inputOrActivation->rows, expectation.columns);
-        } 
+            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->columns, expectation.columns, 0);
+            hidden.weight = new LayerMatrix(hidden.inputOrActivation->columns, expectation.columns);
+        }
         else
         {
-            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->rows, hiddenNodes[i], 0);
-            hidden.weight = new LayerMatrix(hidden.inputOrActivation->rows, hiddenNodes[i]);
+            hidden.weightChange = new LayerMatrix(hidden.inputOrActivation->columns, hiddenNodes[i + 1], 0);
+            hidden.weight = new LayerMatrix(hidden.inputOrActivation->columns, hiddenNodes[i + 1]);
         }
-
 
         layersVector.push_back(std::move(hidden));
     }
@@ -91,104 +90,6 @@ void NeuralNetwork::addHiddenLayers(initializer_list<double> v)
     outLayer.product = new LayerMatrix(expectation.rows, expectation.columns, 0);
     outLayer.inputOrActivation = new LayerMatrix(expectation.rows, expectation.columns, 0);
     outLayer.delta = new LayerMatrix(expectation.rows, expectation.columns, 0);
-    layersVector.push_back(std::move(outLayer));
-}
-
-void NeuralNetwork::firstTest()
-{
-    scalar = 4.8;
-
-    expectation.matrix.assign({
-        0, 0, 0, 0,
-        0, 0, 0, 1,
-        0, 0, 1, 1,
-        0, 0, 1, 0,
-        0, 1, 1, 0,
-        0, 1, 1, 1,
-        0, 1, 0, 1,
-        0, 1, 0, 0,
-        1, 1, 0, 0,
-        1, 1, 0, 1
-    });
-
-    Layer inLayer(LayerType::InputLayer);
-    inLayer.inputOrActivation = new LayerMatrix(10, 10,{
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 1
-
-    });
-    inLayer.weight = new LayerMatrix(10, 10);
-    inLayer.weightChange = new LayerMatrix(10, 10, 0);
-    layersVector.push_back(std::move(inLayer));
-
-    Layer firstHidden(LayerType::HiddenLayer);
-    firstHidden.weight = new LayerMatrix(10, 4);
-    firstHidden.product = new LayerMatrix(10, 10, 0);
-    firstHidden.inputOrActivation = new LayerMatrix(10, 10, 0);
-    firstHidden.weightChange = new LayerMatrix(10, 4, 0);
-    firstHidden.delta = new LayerMatrix(10, 10, 0);
-    layersVector.push_back(std::move(firstHidden));
-
-    Layer outLayer(LayerType::OutputLayer);
-    outLayer.product = new LayerMatrix(10, 4, 0);
-    outLayer.inputOrActivation = new LayerMatrix(10, 4, 0);
-    outLayer.delta = new LayerMatrix(10, 4, 0);
-
-    layersVector.push_back(std::move(outLayer));
-}
-
-void NeuralNetwork::secondTest()
-{
-    scalar = 3.2;
-
-    expectation.matrix.assign({
-        0,
-        1,
-        1,
-        1
-    });
-
-    Layer inLayer(LayerType::InputLayer);
-    inLayer.inputOrActivation = new LayerMatrix(4, 2,{
-        0, 0,
-        0, 1,
-        1, 0,
-        1, 1
-    });
-    inLayer.weight = new LayerMatrix(2, 4);
-    inLayer.weightChange = new LayerMatrix(2, 4, 0);
-    inLayer.delta = new LayerMatrix(2, 4, 0);
-    layersVector.push_back(std::move(inLayer));
-
-    Layer firstHidden(LayerType::HiddenLayer);
-    firstHidden.weight = new LayerMatrix(4, 4);
-    firstHidden.product = new LayerMatrix(4, 4, 0);
-    firstHidden.inputOrActivation = new LayerMatrix(4, 4, 0);
-    firstHidden.weightChange = new LayerMatrix(4, 4, 0);
-    firstHidden.delta = new LayerMatrix(4, 4, 0);
-    layersVector.push_back(std::move(firstHidden));
-
-    Layer secondHidden(LayerType::HiddenLayer);
-    secondHidden.weight = new LayerMatrix(4, 1);
-    secondHidden.product = new LayerMatrix(4, 4, 0);
-    secondHidden.inputOrActivation = new LayerMatrix(4, 4, 0);
-    secondHidden.weightChange = new LayerMatrix(4, 1, 0);
-    secondHidden.delta = new LayerMatrix(4, 4, 0);
-    layersVector.push_back(std::move(secondHidden));
-
-    Layer outLayer(LayerType::OutputLayer);
-    outLayer.product = new LayerMatrix(4, 1, 0);
-    outLayer.inputOrActivation = new LayerMatrix(4, 1, 0);
-    outLayer.delta = new LayerMatrix(4, 1, 0);
-
     layersVector.push_back(std::move(outLayer));
 }
 
@@ -204,6 +105,12 @@ void NeuralNetwork::forward()
                 layersVector[i + 1].product->matrix
                 );
     }
+}
+
+void NeuralNetwork::check()
+{
+    forward();
+    show();
 }
 
 void NeuralNetwork::backPropagate()
@@ -274,7 +181,6 @@ void NeuralNetwork::show()
 
 void NeuralNetwork::execute()
 {
-    //firstTest();
     runLoop();
 }
 
@@ -287,7 +193,7 @@ void NeuralNetwork::runLoop()
         forward();
         backPropagate();
         weightUpdate();
-        if (costFunction() < 0.02 ||
+        if (costFunction() < 0.0002 ||
                 duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
         {
             break;
