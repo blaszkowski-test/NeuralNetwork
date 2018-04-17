@@ -13,7 +13,9 @@ NeuralNetwork::NeuralNetwork() :
 scalar(0),
 costOverall(0),
 lastCost(0),
-bestCost(std::numeric_limits<double>::max())
+treshold(0),
+bestCost(std::numeric_limits<double>::max()),
+EDGE_TRESHOLD(100)
 {
 }
 
@@ -160,11 +162,13 @@ void NeuralNetwork::weightUpdate()
 void NeuralNetwork::costFunction()
 {
     lastCost = costOverall;
+    
     costOverall = 0;
     costVector = expectation.matrix - (*--layersVector.end()).inputOrActivation->matrix;
     std::for_each(costVector.begin(), costVector.end(), [this](double & one)->void {
         this->costOverall += std::fabs(one);
     });
+    
     if (bestCost > costOverall)
     {
         bestCost = costOverall;
@@ -201,6 +205,12 @@ void NeuralNetwork::copyBestResult()
     }
 }
 
+bool NeuralNetwork::stillAlive()
+{        
+    treshold = std::abs(lastCost - costOverall) < 1e-09 ? treshold + 1 : 0;
+    return treshold < EDGE_TRESHOLD;
+}
+
 void NeuralNetwork::show()
 {
     double buffer = 0;
@@ -234,7 +244,7 @@ void NeuralNetwork::runLoop()
         weightUpdate();
         costFunction();
 
-        if (std::abs(lastCost - costOverall) < 1e-09 ||
+        if (!stillAlive() ||
                 duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
         {
             break;
@@ -257,7 +267,8 @@ void NeuralNetwork::printMatrix(const LayerMatrix * const v)
     {
         for (unsigned y = 0; y < v->columns; y++)
         {
-            std::cout << std::setw(15) << v->matrix[i * v->columns + y];
+            std::cout << std::setw(5) << v->matrix[i * v->columns + y] 
+                    << std::setw(2) << " ,";
         }
         std::cout << "\n";
     }

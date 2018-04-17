@@ -39,6 +39,8 @@ vector<double> operator*(const double & scalar, const vector<double> & matrixTwo
 class NeuralNetwork
 {
 protected:
+    const unsigned EDGE_TRESHOLD;
+    unsigned treshold;
     double scalar;
     double bestCost;
     double lastCost;
@@ -65,6 +67,7 @@ protected:
     void createResultStructure();
     void copyBestResult();
     void costFunction();
+    bool stillAlive();
     double sigmoid(double value);
     double sigmoid_d(double value);
     vector<double> apply_sigmoid(const vector<double> & matrixOne);
