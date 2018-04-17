@@ -20,6 +20,7 @@
 #include <math.h>
 #include <iomanip>
 #include <chrono>
+#include <limits>
 
 #include "LayerType.h"
 #include "Layer.h"
@@ -39,10 +40,13 @@ class NeuralNetwork
 {
 protected:
     double scalar;
+    double bestCost;
+    double lastCost;
     double costOverall;
     vector<double> costVector;
     LayerMatrix expectation;
     vector<Layer> layersVector;
+    vector<LayerMatrix> bestResult;
 public:
     NeuralNetwork();
     void addExpectation(initializer_list<double> v, unsigned rows, unsigned columns);
@@ -58,7 +62,9 @@ protected:
     void forward();
     void backPropagate();
     void weightUpdate();
-    double costFunction();
+    void createResultStructure();
+    void copyBestResult();
+    void costFunction();
     double sigmoid(double value);
     double sigmoid_d(double value);
     vector<double> apply_sigmoid(const vector<double> & matrixOne);

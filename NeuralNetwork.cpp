@@ -9,7 +9,11 @@
 
 #include "NeuralNetwork.h"
 
-NeuralNetwork::NeuralNetwork()
+NeuralNetwork::NeuralNetwork() :
+scalar(0),
+costOverall(0),
+lastCost(0),
+bestCost(std::numeric_limits<double>::max())
 {
 }
 
@@ -107,12 +111,6 @@ void NeuralNetwork::forward()
     }
 }
 
-void NeuralNetwork::check()
-{
-    forward();
-    show();
-}
-
 void NeuralNetwork::backPropagate()
 {
     for (unsigned i = layersVector.size() - 1; i > 0; i--)
@@ -159,14 +157,48 @@ void NeuralNetwork::weightUpdate()
     }
 }
 
-double NeuralNetwork::costFunction()
+void NeuralNetwork::costFunction()
 {
+    lastCost = costOverall;
     costOverall = 0;
     costVector = expectation.matrix - (*--layersVector.end()).inputOrActivation->matrix;
     std::for_each(costVector.begin(), costVector.end(), [this](double & one)->void {
         this->costOverall += std::fabs(one);
     });
-    return costOverall;
+    if (bestCost > costOverall)
+    {
+        bestCost = costOverall;
+        copyBestResult();
+    }
+}
+
+void NeuralNetwork::createResultStructure()
+{
+    for (Layer & layer : layersVector)
+    {
+        if (layer.getLayerType() != LayerType::OutputLayer)
+        {
+            bestResult.push_back(*layer.weight);
+        } else
+        {
+            bestResult.push_back(*layer.inputOrActivation);
+        }
+    }
+}
+
+void NeuralNetwork::copyBestResult()
+{
+    for (unsigned i = 0; i < layersVector.size(); i++)
+    {
+        if (layersVector[i].getLayerType() != LayerType::OutputLayer)
+        {
+            bestResult[i] = *layersVector[i].weight;
+        }
+        else
+        {
+            bestResult[i] = *layersVector[i].inputOrActivation;
+        }
+    }
 }
 
 void NeuralNetwork::show()
@@ -179,8 +211,15 @@ void NeuralNetwork::show()
     }
 }
 
+void NeuralNetwork::check()
+{
+    forward();
+    show();
+}
+
 void NeuralNetwork::execute()
 {
+    createResultStructure();
     runLoop();
 }
 
@@ -193,15 +232,23 @@ void NeuralNetwork::runLoop()
         forward();
         backPropagate();
         weightUpdate();
-        if (costFunction() < 0.0002 ||
+        costFunction();
+
+        if (std::abs(lastCost - costOverall) < 1e-09 ||
                 duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
         {
             break;
         }
     }
 
-    show();
-    cout << "\n\nCost: " << costFunction() << "\n\n";
+    //show();
+    cout << "\n\nCost: " << costOverall << "\n\n";
+    cout << "\n\nBest Cost: " << bestCost << "\n\n";
+
+    for (LayerMatrix & one : bestResult)
+    {
+        printMatrix(&one);
+    }
 }
 
 void NeuralNetwork::printMatrix(const LayerMatrix * const v)
