@@ -213,11 +213,12 @@ bool NeuralNetwork::stillAlive()
 
 void NeuralNetwork::show()
 {
-    double buffer = 0;
-    for (vector<Layer>::iterator i = layersVector.begin(); i != layersVector.end(); i++)
+    cout << "\n\nCost: " << costOverall << "\n\n";
+    cout << "\n\nBest Cost: " << bestCost << "\n\n";
+
+    for (LayerMatrix & one : bestResult)
     {
-        cout << "number: " << ++buffer << "\n";
-        cout << (*i);
+        printMatrix(&one);
     }
 }
 
@@ -245,20 +246,14 @@ void NeuralNetwork::runLoop()
         costFunction();
 
         if (!stillAlive() ||
-                duration_cast<duration<double>>(steady_clock::now() - t1).count() > 60)
+                duration_cast<duration<double>>(steady_clock::now() - t1).count() > 30)
         {
             break;
         }
     }
 
     //show();
-    cout << "\n\nCost: " << costOverall << "\n\n";
-    cout << "\n\nBest Cost: " << bestCost << "\n\n";
 
-    for (LayerMatrix & one : bestResult)
-    {
-        printMatrix(&one);
-    }
 }
 
 void NeuralNetwork::printMatrix(const LayerMatrix * const v)

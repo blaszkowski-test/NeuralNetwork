@@ -22,7 +22,7 @@ rows(r), columns(c)
     matrix.resize(rows*columns, 0);
     for (double & one : matrix)
     {
-        one = (double) rand() / (double) RAND_MAX;
+        one = LayerMatrix::randomGenerator();
     }
 }
 
@@ -95,4 +95,13 @@ LayerMatrix LayerMatrix::transpose()
     }
 
     return result;
+}
+
+std::default_random_engine LayerMatrix::generator(std::chrono::system_clock::now().time_since_epoch().count());
+
+std::uniform_real_distribution<double> LayerMatrix::distribution(0.0, 1.0);
+
+double LayerMatrix::randomGenerator()
+{
+    return distribution(generator);
 }

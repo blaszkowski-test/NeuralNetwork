@@ -17,11 +17,18 @@
 #include <initializer_list>
 #include <stdlib.h>
 #include <time.h>
+#include <random>
+#include <chrono>
+
 using std::vector;
 using std::initializer_list;
 
 class LayerMatrix
 {
+protected:
+    static std::default_random_engine generator;
+    static std::uniform_real_distribution<double> distribution;
+    static double randomGenerator();
 public:
     vector<double> matrix;
     unsigned int rows;
@@ -37,6 +44,7 @@ public:
     LayerMatrix & operator=(const LayerMatrix & one);
     LayerMatrix operator*(const LayerMatrix & two);
     LayerMatrix transpose();
+
 };
 
 #endif /* LAYERMATRIX_H */
