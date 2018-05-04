@@ -39,15 +39,16 @@ rows(r), columns(c)
 }
 
 LayerMatrix::LayerMatrix(const LayerMatrix & one) :
-rows(one.rows), columns(one.columns)
+rows(one.rows), columns(one.columns), matrix(one.matrix)
 {
-    matrix.assign(one.matrix.begin(), one.matrix.end());
 }
 
 LayerMatrix::LayerMatrix(LayerMatrix && one) :
-rows(one.rows), columns(one.columns)
+rows(one.rows), columns(one.columns), matrix(one.matrix)
 {
-    matrix.assign(one.matrix.begin(), one.matrix.end());
+    one.rows = 0;
+    one.columns = 0;
+    one.matrix.clear();
 }
 
 LayerMatrix & LayerMatrix::operator=(const LayerMatrix & one)

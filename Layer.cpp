@@ -84,10 +84,10 @@ Layer & Layer::operator=(const Layer & one)
     return *this;
 }
 
-ostream & Layer::printOneLayerMatrix(ostream & out, const LayerMatrix * const one, const char * type)
+void Layer::printOneLayerMatrix(ostream & out, const LayerMatrix * const one, const char * type)
 {
     if (one == nullptr)
-        return out;
+        return;
 
     out << type << ":\n";
 
@@ -100,9 +100,7 @@ ostream & Layer::printOneLayerMatrix(ostream & out, const LayerMatrix * const on
         }
         out << "\n";
     }
-    out << "\n";
-
-    return out;
+    out << "\n";   
 }
 
 ostream & operator<<(ostream& out, Layer& one)

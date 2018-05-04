@@ -38,7 +38,7 @@ public:
     ~Layer();
     LayerType getLayerType();
     Layer & operator=(const Layer & one);
-    ostream & printOneLayerMatrix(ostream & out, const LayerMatrix * const one, const char * type);
+    void printOneLayerMatrix(ostream & out, const LayerMatrix * const one, const char * type);
     friend ostream & operator<<(ostream & out, Layer & one);
 };
 

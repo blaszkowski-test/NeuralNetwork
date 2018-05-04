@@ -14,8 +14,33 @@ scalar(0),
 costOverall(0),
 lastCost(0),
 treshold(0),
-bestCost(std::numeric_limits<double>::max()),
-EDGE_TRESHOLD(100)
+bestCost(std::numeric_limits<double>::max())
+{
+}
+
+NeuralNetwork::NeuralNetwork(const NeuralNetwork& nn) :
+scalar(nn.scalar),
+costOverall(nn.costOverall),
+lastCost(nn.lastCost),
+treshold(nn.treshold),
+bestCost(nn.bestCost),
+costVector(nn.costVector),
+expectation(nn.expectation),
+layersVector(nn.layersVector),
+bestResult(nn.bestResult)
+{
+}
+
+NeuralNetwork::NeuralNetwork(NeuralNetwork&& nn) :
+scalar(nn.scalar),
+costOverall(nn.costOverall),
+lastCost(nn.lastCost),
+treshold(nn.treshold),
+bestCost(nn.bestCost),
+costVector(nn.costVector),
+expectation(nn.expectation),
+layersVector(nn.layersVector),
+bestResult(nn.bestResult)
 {
 }
 
@@ -162,13 +187,13 @@ void NeuralNetwork::weightUpdate()
 void NeuralNetwork::costFunction()
 {
     lastCost = costOverall;
-    
+
     costOverall = 0;
     costVector = expectation.matrix - (*--layersVector.end()).inputOrActivation->matrix;
     std::for_each(costVector.begin(), costVector.end(), [this](double & one)->void {
         this->costOverall += std::fabs(one);
     });
-    
+
     if (bestCost > costOverall)
     {
         bestCost = costOverall;
@@ -183,7 +208,8 @@ void NeuralNetwork::createResultStructure()
         if (layer.getLayerType() != LayerType::OutputLayer)
         {
             bestResult.push_back(*layer.weight);
-        } else
+        }
+        else
         {
             bestResult.push_back(*layer.inputOrActivation);
         }
@@ -206,7 +232,7 @@ void NeuralNetwork::copyBestResult()
 }
 
 bool NeuralNetwork::stillAlive()
-{        
+{
     treshold = std::abs(lastCost - costOverall) < 1e-09 ? treshold + 1 : 0;
     return treshold < EDGE_TRESHOLD;
 }
@@ -245,15 +271,14 @@ void NeuralNetwork::runLoop()
         weightUpdate();
         costFunction();
 
+        duration<double> time_span = duration_cast<duration<double>>(steady_clock::now() - t1);
+
         if (!stillAlive() ||
-                duration_cast<duration<double>>(steady_clock::now() - t1).count() > 30)
+                time_span.count() > 30)
         {
             break;
         }
     }
-
-    //show();
-
 }
 
 void NeuralNetwork::printMatrix(const LayerMatrix * const v)
@@ -262,7 +287,7 @@ void NeuralNetwork::printMatrix(const LayerMatrix * const v)
     {
         for (unsigned y = 0; y < v->columns; y++)
         {
-            std::cout << std::setw(5) << v->matrix[i * v->columns + y] 
+            std::cout << std::setw(5) << v->matrix[i * v->columns + y]
                     << std::setw(2) << " ,";
         }
         std::cout << "\n";
@@ -362,3 +387,28 @@ vector<double> operator*(const double & scalar, const vector<double> & matrixTwo
 
     return matrixResult;
 }
+
+NeuralNetwork & NeuralNetwork::operator=(const NeuralNetwork & nn)
+{
+    if (&nn == this)
+        return *this;
+
+    scalar = nn.scalar;
+    costOverall = nn.costOverall;
+    lastCost = nn.lastCost;
+    treshold = nn.treshold;
+    bestCost = nn.bestCost;
+    costVector = nn.costVector;
+    expectation = nn.expectation;
+    layersVector = nn.layersVector;
+    bestResult = nn.bestResult;
+
+    return *this;
+}
+
+bool NeuralNetwork::operator<(const NeuralNetwork & nn)
+{
+    return this->bestCost < nn.bestCost;
+}
+
+const unsigned NeuralNetwork::EDGE_TRESHOLD = 100;

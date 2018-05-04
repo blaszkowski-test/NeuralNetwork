@@ -38,19 +38,22 @@ vector<double> operator*(const double & scalar, const vector<double> & matrixTwo
 
 class NeuralNetwork
 {
+public:
+    double bestCost;
+    vector<LayerMatrix> bestResult;
 protected:
-    const unsigned EDGE_TRESHOLD;
+    static const unsigned EDGE_TRESHOLD;
     unsigned treshold;
     double scalar;
-    double bestCost;
     double lastCost;
     double costOverall;
+    vector<Layer> layersVector;
     vector<double> costVector;
     LayerMatrix expectation;
-    vector<Layer> layersVector;
-    vector<LayerMatrix> bestResult;
 public:
     NeuralNetwork();
+    NeuralNetwork(const NeuralNetwork & nn);
+    NeuralNetwork(NeuralNetwork && nn);
     void addExpectation(initializer_list<double> v, unsigned rows, unsigned columns);
     void addScalar(double scalar);
     void addInputLayer(initializer_list<double> v, unsigned rows, unsigned columns);
@@ -59,6 +62,8 @@ public:
     void execute();
     void show();
     void check();
+    NeuralNetwork & operator=(const NeuralNetwork & nn);
+    bool operator<(const NeuralNetwork & nn);
 protected:
     void runLoop();
     void forward();

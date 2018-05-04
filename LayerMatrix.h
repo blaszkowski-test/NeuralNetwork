@@ -25,15 +25,14 @@ using std::initializer_list;
 
 class LayerMatrix
 {
-protected:
-    static std::default_random_engine generator;
-    static std::uniform_real_distribution<double> distribution;
-    static double randomGenerator();
 public:
     vector<double> matrix;
     unsigned int rows;
     unsigned int columns;
-
+protected:
+    static std::default_random_engine generator;
+    static std::uniform_real_distribution<double> distribution;
+public:
     LayerMatrix();
     LayerMatrix(const LayerMatrix & one);
     LayerMatrix(LayerMatrix && one);
@@ -44,7 +43,8 @@ public:
     LayerMatrix & operator=(const LayerMatrix & one);
     LayerMatrix operator*(const LayerMatrix & two);
     LayerMatrix transpose();
-
+protected:
+    static double randomGenerator();
 };
 
 #endif /* LAYERMATRIX_H */

@@ -6,6 +6,15 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/I:/project/NeuralNetwork/LayerType.h</file>
+            <file>file:/I:/project/NeuralNetwork/NeuralNetwork.cpp</file>
+            <file>file:/I:/project/NeuralNetwork/LayerMatrix.cpp</file>
+            <file>file:/I:/project/NeuralNetwork/LayerMatrix.h</file>
+            <file>file:/I:/project/NeuralNetwork/main.cpp</file>
+            <file>file:/I:/project/NeuralNetwork/Layer.h</file>
+            <file>file:/I:/project/NeuralNetwork/NeuralNetwork.h</file>
+            <file>file:/I:/project/NeuralNetwork/Layer.cpp</file>
+        </group>
     </open-files>
 </project-private>
