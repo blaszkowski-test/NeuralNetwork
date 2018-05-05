@@ -41,6 +41,7 @@ class NeuralNetwork
 public:
     double bestCost;
     vector<LayerMatrix> bestResult;
+    static volatile bool stopSearch;
 protected:
     static const unsigned EDGE_TRESHOLD;
     unsigned treshold;
@@ -73,6 +74,7 @@ protected:
     void copyBestResult();
     void costFunction();
     bool stillAlive();
+    bool solutionAccurate();
     double sigmoid(double value);
     double sigmoid_d(double value);
     vector<double> apply_sigmoid(const vector<double> & matrixOne);

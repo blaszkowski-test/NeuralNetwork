@@ -239,19 +239,36 @@ bool NeuralNetwork::stillAlive()
 
 void NeuralNetwork::show()
 {
-    cout << "\n\nCost: " << costOverall << "\n\n";
     cout << "\n\nBest Cost: " << bestCost << "\n\n";
-
     for (LayerMatrix & one : bestResult)
     {
         printMatrix(&one);
     }
 }
 
+bool NeuralNetwork::solutionAccurate()
+{
+    vector<double> & bufferRef = (*--layersVector.end()).inputOrActivation->matrix;
+
+    for (int i = 0; i < expectation.matrix.size(); ++i)
+    {
+        if (expectation.matrix[i] == 0 && bufferRef[i] >= 0.1)
+        {
+            return false;
+        }
+        else if (expectation.matrix[i] == 1 && bufferRef[i] <= 0.6)
+        {
+            return false;
+        }
+    }
+    NeuralNetwork::stopSearch = true;
+    return true;
+}
+
 void NeuralNetwork::check()
 {
     forward();
-    show();
+    costFunction();
 }
 
 void NeuralNetwork::execute()
@@ -273,8 +290,7 @@ void NeuralNetwork::runLoop()
 
         duration<double> time_span = duration_cast<duration<double>>(steady_clock::now() - t1);
 
-        if (!stillAlive() ||
-                time_span.count() > 30)
+        if (NeuralNetwork::stopSearch || !stillAlive() || solutionAccurate() || time_span.count() > 30)
         {
             break;
         }
@@ -412,3 +428,5 @@ bool NeuralNetwork::operator<(const NeuralNetwork & nn)
 }
 
 const unsigned NeuralNetwork::EDGE_TRESHOLD = 100;
+
+volatile bool NeuralNetwork::stopSearch = false;

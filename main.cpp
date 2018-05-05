@@ -14,36 +14,29 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <stdlib.h>
-#include <time.h>
 #include <thread>
 #include <mutex> 
 #include "NeuralNetwork.h"
 using namespace std;
 
-std::mutex mtx; 
-
-void executeNeural(NeuralNetwork * n)
+void executeNeural(NeuralNetwork & n)
 {
-    n->execute();
-    mtx.lock();
-    std::cout << "\n ================================ \n";
-    n->show();
-    std::cout << "\n ================================ \n";
-    mtx.unlock();
+    n.execute();
 }
 
 void testNerual()
 {
-    std::vector<NeuralNetwork*> tasks;
+    std::vector<NeuralNetwork> tasks;
     std::vector<std::thread> threads;
     for (int i = 0; i < 10; i++)
     {
-        NeuralNetwork * test = new NeuralNetwork();
+        tasks.push_back(NeuralNetwork());
 
-        test->addScalar(4.8);
+        NeuralNetwork & bufferRef = (*--tasks.end());
 
-        test->addExpectation({
+        bufferRef.addScalar(4.8);
+
+        bufferRef.addExpectation({
             0, 0, 0, 0,
             0, 0, 0, 1,
             0, 0, 1, 1,
@@ -56,7 +49,7 @@ void testNerual()
             1, 1, 0, 1
         }, 10, 4);
 
-        test->addInputLayer({
+        bufferRef.addInputLayer({
             1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -69,23 +62,20 @@ void testNerual()
             0, 0, 0, 0, 0, 0, 0, 0, 0, 1
         }, 10, 10);
 
-        test->oneHiddenLayer();
-        
-        tasks.push_back(test);
-        
- 
+        bufferRef.oneHiddenLayer();
     }
 
-    for(NeuralNetwork * it : tasks)
+    for (NeuralNetwork & it : tasks)
     {
-        threads.push_back(std::thread(executeNeural,it));
+        threads.push_back(std::thread(executeNeural, std::ref(it)));
     }
-    
+
     for (auto& th : threads) th.join();
-    
-    for(NeuralNetwork * it : tasks)
+
+    std::sort(tasks.begin(), tasks.end());
+    for (auto& t : tasks)
     {
-        delete it;
+        t.show();
     }
 }
 
